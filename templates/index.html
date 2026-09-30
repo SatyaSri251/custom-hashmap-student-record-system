@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HashMap Student Records</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="app-shell">
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">H</div>
+            <div>
+                <h1>HashMap LMS</h1>
+                <span>Student Record System</span>
+            </div>
+        </div>
+
+        <nav>
+            <button class="nav-btn active" data-section="dashboard">◈ <span>Dashboard</span></button>
+            <button class="nav-btn" data-section="students">♙ <span>Student Records</span></button>
+            <button class="nav-btn" data-section="hashmap">⌘ <span>Hash Table</span></button>
+            <button class="nav-btn" data-section="about">ⓘ <span>How It Works</span></button>
+        </nav>
+
+        <div class="sidebar-card">
+            <strong>Core Algorithm</strong>
+            <p>Separate Chaining</p>
+            <small>Custom hash function + linked lists</small>
+        </div>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <div>
+                <p class="eyebrow">DATA STRUCTURES PROJECT</p>
+                <h2 id="pageTitle">Student Record Dashboard</h2>
+            </div>
+            <div class="status"><span></span> HashMap Online</div>
+        </header>
+
+        <section id="dashboard" class="section active">
+            <div class="hero">
+                <div>
+                    <p class="eyebrow">CUSTOM IMPLEMENTATION</p>
+                    <h3>Student records, powered by your own HashMap.</h3>
+                    <p>Search, insert and delete records while seeing exactly how buckets and collisions work under the hood.</p>
+                    <button class="primary" onclick="showSection('students')">Manage Students →</button>
+                </div>
+                <div class="hero-art">
+                    <div class="hash-symbol">#</div>
+                    <div class="chain chain1"></div>
+                    <div class="chain chain2"></div>
+                    <div class="chain chain3"></div>
+                </div>
+            </div>
+
+            <div class="stats">
+                <div class="stat"><span>Total Students</span><strong id="statStudents">0</strong><small>records stored</small></div>
+                <div class="stat"><span>Table Capacity</span><strong id="statCapacity">0</strong><small>buckets available</small></div>
+                <div class="stat"><span>Load Factor</span><strong id="statLoad">0%</strong><small>before resize threshold</small></div>
+                <div class="stat"><span>Collision Strategy</span><strong>Chaining</strong><small>linked nodes</small></div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-head">
+                    <div><p class="eyebrow">QUICK ACTIONS</p><h3>Demonstrate the system</h3></div>
+                </div>
+                <div class="action-grid">
+                    <button onclick="showSection('students')"><b>＋</b><span>Add Student<small>Create a new record</small></span></button>
+                    <button onclick="showSection('students'); setTimeout(()=>document.getElementById('searchId').focus(),100)"><b>⌕</b><span>Search Student<small>O(1) average lookup</small></span></button>
+                    <button onclick="showSection('hashmap')"><b>⌘</b><span>Visualize Hash Table<small>See buckets & collisions</small></span></button>
+                    <button onclick="showSection('about')"><b>?</b><span>Explain Algorithm<small>Jury presentation guide</small></span></button>
+                </div>
+            </div>
+        </section>
+
+        <section id="students" class="section">
+            <div class="section-head">
+                <div><p class="eyebrow">CRUD OPERATIONS</p><h3>Student Records</h3></div>
+                <button class="primary" onclick="openModal()">＋ Add Student</button>
+            </div>
+
+            <div class="search-bar">
+                <div class="search-box">⌕ <input id="searchId" placeholder="Search by Student ID..." oninput="searchStudent()"></div>
+                <button class="secondary" onclick="loadStudents()">↻ Refresh</button>
+            </div>
+
+            <div class="panel table-panel">
+                <table>
+                    <thead><tr><th>Student ID</th><th>Name</th><th>Age</th><th>Course</th><th>Marks</th><th>Actions</th></tr></thead>
+                    <tbody id="studentTable"></tbody>
+                </table>
+                <div id="emptyState" class="empty" style="display:none">No matching records found.</div>
+            </div>
+        </section>
+
+        <section id="hashmap" class="section">
+            <div class="section-head">
+                <div><p class="eyebrow">INTERNAL STRUCTURE</p><h3>Hash Table Visualization</h3></div>
+                <div class="pill">Separate Chaining</div>
+            </div>
+
+            <div class="hash-info">
+                <div class="formula"><span>Hash Function</span><code>hash = (hash × 31 + ASCII) % capacity</code></div>
+                <div class="formula"><span>Collision Handling</span><b>Linked-list chaining</b></div>
+                <div class="formula"><span>Resize Trigger</span><b>Load factor &gt; 0.75</b></div>
+            </div>
+
+            <div class="hash-demo panel">
+                <div class="panel-head"><div><p class="eyebrow">LIVE HASH DEMO</p><h3>Trace a Student ID</h3></div></div>
+                <div class="hash-input"><input id="hashKey" placeholder="e.g. STU1001"><button class="primary" onclick="runHashDemo()">Calculate Hash</button></div>
+                <div id="hashResult"></div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-head"><div><p class="eyebrow">BUCKETS</p><h3>Current Hash Table</h3></div></div>
+                <div id="buckets" class="buckets"></div>
+            </div>
+        </section>
+
+        <section id="about" class="section">
+            <div class="section-head"><div><p class="eyebrow">JURY EXPLANATION</p><h3>How the System Works</h3></div></div>
+            <div class="explain-grid">
+                <div class="explain-card"><div class="num">01</div><h4>Hashing</h4><p>The Student ID is converted into a bucket index using a deterministic polynomial hash function.</p></div>
+                <div class="explain-card"><div class="num">02</div><h4>Collision Handling</h4><p>When two IDs map to the same bucket, records are connected as nodes in a linked list instead of overwriting each other.</p></div>
+                <div class="explain-card"><div class="num">03</div><h4>Search</h4><p>The system hashes the ID, jumps to one bucket and traverses only that bucket's chain.</p></div>
+                <div class="explain-card"><div class="num">04</div><h4>Resizing</h4><p>When the load factor exceeds 0.75, the table doubles in size and all records are rehashed.</p></div>
+            </div>
+        </section>
+    </main>
+</div>
+<div id="modal" class="modal">
+    <div class="modal-card">
+        <button class="close" onclick="closeModal()">×</button>
+        <p class="eyebrow">NEW RECORD</p>
+        <h3>Add Student</h3>
+        <form id="studentForm">
+            <label>Student ID<input name="student_id" required placeholder="STU1006"></label>
+            <label>Full Name<input name="name" required placeholder="Student name"></label>
+            <div class="two-col">
+                <label>Age<input name="age" type="number" min="1" required></label>
+                <label>Marks<input name="marks" type="number" min="0" max="100" step="0.1" required></label>
+            </div>
+            <label>Course<input name="course" required placeholder="Computer Science"></label>
+            <button class="primary full" type="submit">Save Student</button>
+        </form>
+        <div id="formMessage"></div>
+    </div>
+</div>
+
+<div id="toast"></div>
+<script src="/static/app.js"></script>
+</body>
+</html>
